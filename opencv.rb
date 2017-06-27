@@ -22,7 +22,7 @@ class Opencv < Formula
   option "with-opengl", "Build with OpenGL support"
   option "with-ximea", "Build with XIMEA support"
   option "without-numpy", "Use your own numpy instead of Homebrew's numpy"
-  option "without-python", "Build without python support"
+  option "with-python", "Build with python support"
 
   if DevelopmentTools.clang_build_version < 800
     option "with-quicktime", "Use QuickTime for Video I/O"
@@ -39,11 +39,13 @@ class Opencv < Formula
   depends_on "jpeg"
   depends_on "libpng"
   depends_on "libtiff"
+  depends_on "qt"
+  depends_on "gtk+"
   depends_on "eigen" => :recommended
   depends_on "openexr" => :recommended
-  depends_on :python => :recommended if MacOS.version <= :snow_leopard || !OS.mac?
+  depends_on :python => :recommended if MacOS.version <= :sierra || !OS.mac?
   depends_on "numpy" => :recommended if build.with? "python"
-  depends_on CudaRequirement => :optional
+  depends_on CudaRequirement
   depends_on "jasper" => :optional
   depends_on :java => :optional
   depends_on :ant if build.with? "java"
@@ -95,6 +97,9 @@ class Opencv < Formula
     args << "-DWITH_GSTREAMER=" + arg_switch("gstreamer")
     args << "-DWITH_XIMEA=" + arg_switch("ximea")
     args << "-DWITH_VTK=" + arg_switch("vtk")
+    args << "-WITH_QT" + arg_switch("qt")
+    args << "-WITH_CARBON"
+    args << "-WITH_GTK" + arg_switch("gtk+"  )
 
     if build.with? "python"
       py_prefix = `python-config --prefix`.chomp
